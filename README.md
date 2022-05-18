@@ -1,58 +1,40 @@
+## Overview
 
-# Welcome to your CDK Python project!
+![Architecture Overview](docs/images/kerb_arch.png)
 
-This is a blank project for CDK development with Python.
+This is an example [CDK application](https://aws.amazon.com/cdk/) that deploys a container image for use by AWS Lambda. Specifically, the container has Kerberos specific libraries installed so the Lambda function can make calls such as `kinit`.
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+The container definition and build commands can be found in the [Dockerfile](src/Dockerfile). The image is based on the [AWS Lambda Python 3.7 runtime environment](https://docs.aws.amazon.com/lambda/latest/dg/python-image.html#python-image-base).
 
-This project is set up like a standard Python project.  The initialization
-process also creates a virtualenv within this project, stored under the `.venv`
-directory.  To create the virtualenv it assumes that there is a `python3`
-(or `python` for Windows) executable in your path with access to the `venv`
-package. If for any reason the automatic creation of the virtualenv fails,
-you can create the virtualenv manually.
+### Deploying the application
 
-To manually create a virtualenv on MacOS and Linux:
+To deploy the application in your environment, you must first [install the AWS CDK](https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html#getting_started_install) and subsequently [bootstrap your environment](https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html#getting_started_bootstrap).
 
-```
-$ python3 -m venv .venv
+```bash
+$ npm install -g aws-cdk # Install aws-cdk with NPM
+$ cdk bootstrap aws://<account ID>/<region> # Bootstrap your account in the region of your choice
 ```
 
-After the init process completes and the virtualenv is created, you can use the following
-step to activate your virtualenv.
+Once complete, create a virtual environment and install the dependencies defined in the Pipfile. I chose to use [pipenv](https://pipenv.pypa.io/en/latest/) for python dependency management, but any python package manager can be used here.
 
-```
-$ source .venv/bin/activate
-```
-
-If you are a Windows platform, you would activate the virtualenv like this:
-
-```
-% .venv\Scripts\activate.bat
+```bash
+$ pipenv --python 3.9 # create a new environment
+$ pipenv shell # activate the environment
+$ pipenv install # install the dependencies from Pipfile.lock
 ```
 
-Once the virtualenv is activated, you can install the required dependencies.
+Once the dependencies are installed, you can now synthesize the application:
 
-```
-$ pip install -r requirements.txt
-```
-
-At this point you can now synthesize the CloudFormation template for this code.
-
-```
+```bash
 $ cdk synth
 ```
 
-To add additional dependencies, for example other CDK libraries, just add
-them to your `setup.py` file and rerun the `pip install -r requirements.txt`
-command.
+This will generate the CDK application and corresponding CloudFormation template. If acceptable, you can then deploy this:
 
-## Useful commands
+```bash
+$ cdk deploy
+```
 
- * `cdk ls`          list all stacks in the app
- * `cdk synth`       emits the synthesized CloudFormation template
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk docs`        open CDK documentation
+### S3 Bucket Integration
 
-Enjoy!
+Included in the CDK application are additional constructs that have been commented out but are available for illustrative purposes. This includes an S3 bucket that also grants the Lambda's execution role read-only access to the S3 bucket. You can uncomment these additional resources and rerun `cdk synth` to see what new resources would be created and deployed.
