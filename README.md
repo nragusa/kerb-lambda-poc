@@ -37,4 +37,4 @@ $ cdk deploy
 
 ### S3 Bucket Integration
 
-Included in the CDK application are additional constructs that have been commented out but are available for illustrative purposes. This includes an S3 bucket that also grants the Lambda's execution role read-only access to the S3 bucket. You can uncomment these additional resources and rerun `cdk synth` to see what new resources would be created and deployed.
+Included in the [CDK application](kerb_lambda_poc/kerb_lambda_poc_stack.py) are [additional constructs](https://github.com/nragusa/kerb-lambda-poc/blob/main/kerb_lambda_poc/kerb_lambda_poc_stack.py#L30-L46) that have been commented out but are available for illustrative purposes. This includes an S3 bucket that also grants the Lambda's execution role read-only access to the S3 bucket. You can uncomment these additional resources and rerun `cdk synth` to see what new resources would be created and deployed.
